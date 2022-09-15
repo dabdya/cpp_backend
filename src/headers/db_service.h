@@ -22,3 +22,5 @@ std::vector<web::json::value> get_node_children(
     const std::string& node_id, std::shared_ptr<PGConnection> conn);
 
 void delete_node_children(std::string node_id, std::shared_ptr<PGConnection> conn);
+
+void create_table(std::shared_ptr<PGConnection> conn);

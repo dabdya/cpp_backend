@@ -48,17 +48,43 @@ void use_routes(WebApplication& app) {
         web::http::methods::GET, "/nodes/{id}", get_node);
 }
 
+void init_db(std::shared_ptr<PGBackend> pg_backend) {
+    auto conn = pg_backend->get_connection();
+
+    create_table(conn);
+    pg_backend->free_connection(conn);
+}
+
+struct args {
+    std::string host;
+    std::string port;
+};
+
+args parse_args(int argc, char** argv) {
+    args args_;
+    for (int i = 1; i < argc; ++i) {
+        if (i == 1) args_.host = argv[i];
+        else args_.port = argv[i];
+    }
+    return args_;
+}
+
 int main(int argc, char** argv) {
     PGParams params {"localhost", 5432, "disk", "iamdabdya", "Cy3brFt5"};
     auto pg_backend = std::make_shared<PGBackend>(params);
 
-    WebApplication app("localhost", "8000", "", pg_backend);
+    init_db(pg_backend);
+
+    args args_ = parse_args(argc, argv);
+    WebApplication app(args_.host, args_.port, pg_backend);
+
     use_routes(app);
 
     InterruptHandler::set_SIGINT();
 
     app.run().wait();
-    std::cout << "Server is ready to accept requests" << std::endl << std::flush;
+    std::cout << "Server is ready to accept requests " 
+    << args_.host << " " << args_.port << std::endl << std::flush;
 
     InterruptHandler::wait_interrupt();
     app.stop().wait();

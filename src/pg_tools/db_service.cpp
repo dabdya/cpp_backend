@@ -1,6 +1,7 @@
 #include "db_service.h"
 #include <fmt/core.h>
 #include <libpq-fe.h>
+#include <sstream>
 #include <cpprest/http_listener.h>
 
 
@@ -272,6 +273,31 @@ void delete_node_children(std::string node_id, std::shared_ptr<PGConnection> con
     for (auto& child : children_vect) {
         if (child["type"].as_string() == "FOLDER") {
             delete_node_children(child["id"].as_string(), conn);
+        }
+    }
+}
+
+void create_table(std::shared_ptr<PGConnection> conn) {
+    std::ostringstream ss;
+    ss << "CREATE TABLE IF NOT EXISTS nodes (\n";
+    ss << "id VARCHAR PRIMARY KEY,";
+    ss << "type NODE_TYPE NOT NULL,";
+    ss << "\"parentId\" VARCHAR,";
+    ss << "url VARCHAR(255),";
+    ss << "size INT,";
+    ss << "\"updateDate\" TIMESTAMP NOT NULL";
+    ss << ");";
+
+    std::string create_query = ss.str();
+    
+    if (!PQsendQuery(conn->connection().get(), create_query.c_str())) {
+        std::cout << PQerrorMessage(conn->connection().get()) << std::flush;
+        throw std::runtime_error("SEND ERROR");
+    }
+
+    while (auto res = PQgetResult(conn->connection().get())) {
+        if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+            throw std::runtime_error("EXECUTION ERROR");
         }
     }
 }

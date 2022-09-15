@@ -14,7 +14,7 @@ class WebApplication {
 public:
     WebApplication(
         std::string host, std::string port, 
-        std::string path, std::shared_ptr<PGBackend>
+        std::shared_ptr<PGBackend>
     );
 
     void add_route(

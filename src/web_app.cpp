@@ -4,9 +4,9 @@
 #include "utils.h"
 
 WebApplication::WebApplication(
-    std::string host, std::string port, std::string path, std::shared_ptr<PGBackend> pg_backend) 
+    std::string host, std::string port, std::shared_ptr<PGBackend> pg_backend) 
 {
-    address = web::uri(fmt::format("http://{}:{}/{}", host, port, path));
+    address = web::uri(fmt::format("http://{}:{}", host, port));
     listener = HTTP_Listener(address);
     db_backend = pg_backend;
 }
