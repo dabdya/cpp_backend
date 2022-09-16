@@ -1,4 +1,5 @@
 #include "pg_conn.h"
+#include <stdexcept>
 
 PGConnection::PGConnection(PGParams params) {
     this->params = params;

@@ -70,10 +70,10 @@ args parse_args(int argc, char** argv) {
 }
 
 int main(int argc, char** argv) {
-    PGParams params {"localhost", 5432, "disk", "iamdabdya", "Cy3brFt5"};
+    PGParams params {"db", 5432, "yandex_db", "admin", "pass"};
     auto pg_backend = std::make_shared<PGBackend>(params);
 
-    init_db(pg_backend);
+    //init_db(pg_backend);
 
     args args_ = parse_args(argc, argv);
     WebApplication app(args_.host, args_.port, pg_backend);
@@ -84,8 +84,10 @@ int main(int argc, char** argv) {
 
     app.run().wait();
     std::cout << "Server is ready to accept requests " 
-    << args_.host << " " << args_.port << std::endl << std::flush;
+    << "http://" << args_.host << ":" << args_.port << std::endl << std::flush;
 
     InterruptHandler::wait_interrupt();
     app.stop().wait();
+
+    std::cout << "Server shutdown" << std::flush;
 }

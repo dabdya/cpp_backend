@@ -2,6 +2,7 @@
 #include <fmt/core.h>
 #include <libpq-fe.h>
 #include <sstream>
+#include <stdexcept>
 #include <cpprest/http_listener.h>
 
 
@@ -279,14 +280,15 @@ void delete_node_children(std::string node_id, std::shared_ptr<PGConnection> con
 
 void create_table(std::shared_ptr<PGConnection> conn) {
     std::ostringstream ss;
+    ss << "CREATE TYPE NODE_TYPE AS ENUM ('FILE', 'FOLDER');\n";
     ss << "CREATE TABLE IF NOT EXISTS nodes (\n";
-    ss << "id VARCHAR PRIMARY KEY,";
-    ss << "type NODE_TYPE NOT NULL,";
-    ss << "\"parentId\" VARCHAR,";
-    ss << "url VARCHAR(255),";
-    ss << "size INT,";
-    ss << "\"updateDate\" TIMESTAMP NOT NULL";
-    ss << ");";
+    ss << "id VARCHAR PRIMARY KEY,\n";
+    ss << "type NODE_TYPE NOT NULL,\n";
+    ss << "\"parentId\" VARCHAR,\n";
+    ss << "url VARCHAR(255),\n";
+    ss << "size INT,\n";
+    ss << "\"updateDate\" TIMESTAMP NOT NULL\n";
+    ss << ");\n";
 
     std::string create_query = ss.str();
     

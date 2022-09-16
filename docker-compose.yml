@@ -1,0 +1,21 @@
+version: "3"
+
+services:
+  db:
+    container_name: 'yandex_db'
+    image: postgres
+    volumes:
+      - ./data:/var/lib/postgresql/data
+    env_file:
+      - db.env
+    expose:
+    - 5432
+
+  backend:
+    container_name: 'yandex_backend'
+    image: cpp_backend
+    build: ./src
+    ports:
+      - 8000:8000/tcp
+    depends_on:
+      - db
