@@ -73,7 +73,7 @@ int main(int argc, char** argv) {
     PGParams params {"db", 5432, "yandex_db", "admin", "pass"};
     auto pg_backend = std::make_shared<PGBackend>(params);
 
-    //init_db(pg_backend);
+    init_db(pg_backend);
 
     args args_ = parse_args(argc, argv);
     WebApplication app(args_.host, args_.port, pg_backend);
